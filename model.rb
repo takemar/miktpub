@@ -3,7 +3,25 @@ module Plugin::MiktpubModel
   class Model < Diva::Model
 
     def initialize(args)
-      super(args.transform_keys(self.class.field_by_uri.transform_keys(&:to_sym)))
+      super(
+        args.transform_keys(
+          self.class.field_by_uri.transform_keys(&:to_sym)
+        ).transform_values do |value|
+          if value.kind_of?(Array)
+            value.map do |v|
+              if v.kind_of?(Hash) && v.key?(:@value)
+                v[:@value]
+              elsif v.kind_of?(Hash) && v.size == 1 && v.key?(:@id)
+                v[:@id]
+              else
+                v
+              end
+            end
+          else
+            value
+          end
+        end
+      )
     end
 
     class << self
