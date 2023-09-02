@@ -105,6 +105,19 @@ module Plugin::MiktpubModel
       end.flatten.uniq
     end
 
+    private def method_missing(name, ...)
+      @supertypes.reverse_each do |t|
+        if t.respond_to?(name)
+          return t.send(name, ...)
+        end
+      end
+      super
+    end
+
+    def respond_to_missing?(name, include_private)
+      @supertypes.any? { _1.respond_to?(name, include_private) }
+    end
+
     def define_field(field_name, type, required: false, uri: nil, base_uri: nil)
       field_type = (
         case type
@@ -130,29 +143,19 @@ module Plugin::MiktpubModel
         send(field_name)&.first
       end
 
-      if base_uri.nil?
-        base_uri = field_base_uri
+      if base_uri.nil? && self.respond_to?(:field_base_uri, true)
+        base_uri = self.field_base_uri
       end
       if uri.nil?
-        uri = field_uri(field_name, base_uri)
+        uri = (
+          if self.respond_to?(:field_uri, true)
+            field_uri(field_name, base_uri)
+          else
+            "#{ base_uri }#{ field_name }"
+          end
+        )
       end
       field_by_uri[uri] = field_name
-    end
-
-    private def field_uri(field_name, base_uri)
-      "#{ base_uri }#{ field_name }"
-    end
-
-    def field_base_uri(base_uri = nil)
-      if base_uri.nil?
-        @field_base_uri ||= @supertypes.reverse_each do |t|
-          if v = t.field_base_uri
-            break v
-          end
-        end
-      else
-        @field_base_uri = base_uri
-      end
     end
 
     attr_writer :field_base_uri

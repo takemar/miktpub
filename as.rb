@@ -4,13 +4,16 @@ module Plugin::MiktpubModel; module AS
 
   base = Proc.new do
 
-    field_base_uri 'https://www.w3.org/ns/activitystreams#'
+    class << self
 
-    private def field_uri(field_name, base_uri)
-      camelized_name = field_name.split('_').each_with_index.map do |part, index|
-        if index == 0 then part else part.capitalize(:ascii) end
-      end.join('')
-      super(camelized_name, base_uri)
+      def field_base_uri = 'https://www.w3.org/ns/activitystreams#'
+
+      def field_uri(field_name, base_uri)
+        camelized_name = field_name.to_s.split('_').each_with_index.map do |part, index|
+          if index == 0 then part else part.capitalize(:ascii) end
+        end.join('')
+        "#{ base_uri }#{ camelized_name }"
+      end
     end
   end
 
