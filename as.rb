@@ -2,24 +2,25 @@ require_relative 'model'
 
 module Plugin::MiktpubModel; module AS
 
-  base = Proc.new do
+  base = Module.new do
 
-    class << self
+    def field_base_uri = 'https://www.w3.org/ns/activitystreams#'
 
-      def field_base_uri = 'https://www.w3.org/ns/activitystreams#'
-
-      def field_uri(field_name, base_uri)
-        camelized_name = field_name.to_s.split('_').each_with_index.map do |part, index|
-          if index == 0 then part else part.capitalize(:ascii) end
-        end.join('')
-        "#{ base_uri }#{ camelized_name }"
-      end
+    def field_uri(field_name, base_uri)
+      camelized_name = field_name.to_s.split('_').each_with_index.map do |part, index|
+        if index == 0 then part else part.capitalize(:ascii) end
+      end.join('')
+      "#{ base_uri }#{ camelized_name }"
     end
   end
 
   # Core Types
-  BaseObject = Type.new(&base)
-  Link = Type.new(&base)
+  BaseObject = Type.new do
+    extend base
+  end
+  Link = Type.new do
+    extend base
+  end
   Activity = Type.new(BaseObject)
   IntransitiveActivity = Type.new(Activity)
   Collection = Type.new(BaseObject)
@@ -148,5 +149,19 @@ module Plugin::MiktpubModel; module AS
   Profile.define_field :describes, Model[BaseObject]
   Tombstone.define_field :former_type, Model[BaseObject]
   Tombstone.define_field :deleted, :time
+
+  # Diva Mixins
+  BaseObject.module_eval do
+    include Diva::Model::MessageMixin
+    include Diva::Model::UserMixin
+    alias description content!
+    alias user attributed_to!
+    alias created published!
+    alias _icon icon
+    def icon = Skin['icon.png'] # tmp
+    alias _name name
+    alias name name!
+    def idname = 'miktpub' # tmp
+  end
 
 end; end

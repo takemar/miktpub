@@ -2,6 +2,8 @@ module Plugin::MiktpubModel
 
   class Model < Diva::Model
 
+    register :miktpub_model, name: Plugin[:miktpub_model]._('Miktpub'), timeline: true
+
     def initialize(args)
       super(
         args.transform_keys(
@@ -46,7 +48,7 @@ module Plugin::MiktpubModel
         @@memo ||= Hash.new do |h, k|
           x = k.uniq.sort_by(&:hash)
           unless h.key?(x)
-            h[x] = Class.new(self) do
+            h[x] = Class.new(Model) do
               x.each do |type|
                 include type
               end
@@ -140,7 +142,7 @@ module Plugin::MiktpubModel
       add_field(field_name, type: field_type, required: required)
 
       define_method("#{ field_name }!") do
-        send(field_name)&.first
+        @value[field_name]&.first
       end
 
       if base_uri.nil? && self.respond_to?(:field_base_uri, true)
