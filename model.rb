@@ -50,6 +50,10 @@ module Plugin::MiktpubModel
         end.flatten.uniq
       end
 
+      def inspect
+        self.name || "Plugin::MiktpubModel::Model[#{ types.map(&:inspect).join(', ') }]"
+      end
+
       def fields
         @fields ||= self.ancestor_types.map(&:fields).flatten
       end
@@ -58,14 +62,6 @@ module Plugin::MiktpubModel
         @field_by_uri ||= self.ancestor_types.map(&:field_by_uri).reduce do |result, item|
           result.merge(item)
         end.to_h
-      end
-
-      def inspect
-        if self.name
-          self.name
-        else
-          "Plugin::MiktpubModel::Model[#{ types.map(&:inspect).join(', ') }]"
-        end
       end
     end
   end
