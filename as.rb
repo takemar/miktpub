@@ -2,9 +2,21 @@ require_relative 'model'
 
 module Plugin::MiktpubModel; module AS
 
+  base = Proc.new do
+
+    field_base_uri 'https://www.w3.org/ns/activitystreams#'
+
+    private def field_uri(field_name, base_uri)
+      camelized_name = field_name.split('_').each_with_index.map do |part, index|
+        if index == 0 then part else part.capitalize(:ascii) end
+      end.join('')
+      super(camelized_name, base_uri)
+    end
+  end
+
   # Core Types
-  BaseObject = Type.new
-  Link = Type.new
+  BaseObject = Type.new(&base)
+  Link = Type.new(&base)
   Activity = Type.new(BaseObject)
   IntransitiveActivity = Type.new(Activity)
   Collection = Type.new(BaseObject)
@@ -67,71 +79,71 @@ module Plugin::MiktpubModel; module AS
   Mention = Type.new(Link)
 
   # Properties
-  Activity.field.has :actor, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :attachment, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :attributed_to, [Model[BaseObject], Model[Link]]
-  Link.field.has :attributed_to, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :audience, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :bcc, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :bto, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :cc, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :context, [Model[BaseObject], Model[Link]]
-  Collection.field.has :current, [Model[CollectionPage], Model[Link]]
-  Collection.field.has :first, [Model[CollectionPage], Model[Link]]
-  BaseObject.field.has :generator, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :icon, [Model[Image], Model[Link]]
-  BaseObject.field.has :image, [Model[Image], Model[Link]]
-  BaseObject.field.has :in_reply_to, [Model[BaseObject], Model[Link]]
-  Activity.field.has :instrument, [Model[BaseObject], Model[Link]]
-  Collection.field.has :last, [Model[CollectionPage], Model[Link]]
-  BaseObject.field.has :location, [Model[BaseObject], Model[Link]]
-  Collection.field.has :items, [[Model[BaseObject], Model[Link]]]
-  Question.field.has :one_of, [Model[BaseObject], Model[Link]]
-  Question.field.has :any_of, [Model[BaseObject], Model[Link]]
-  Question.field.has :closed, [Model[BaseObject], Model[Link], :time, :bool]
-  Activity.field.has :origin, [Model[BaseObject], Model[Link]]
-  CollectionPage.field.has :next, [Model[CollectionPage], Model[Link]]
-  Activity.field.has :object, [Model[BaseObject], Model[Link]]
-  IntransitiveActivity.field.has :object, :null
-  Relationship.field.has :object, [Model[BaseObject], Model[Link]]
-  CollectionPage.field.has :prev, [Model[CollectionPage], Model[Link]]
-  BaseObject.field.has :preview, [Model[BaseObject], Model[Link]]
-  Link.field.has :preview, [Model[BaseObject], Model[Link]]
-  Activity.field.has :result, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :replies, [[Model[BaseObject], Model[Link]]]
-  BaseObject.field.has :tag, [Model[BaseObject], Model[Link]]
-  Activity.field.has :target, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :to, [Model[BaseObject], Model[Link]]
-  BaseObject.field.has :url, [:uri, Model[Link]]
-  Place.field.float :accuracy
-  Place.field.float :altitude
-  BaseObject.field.string :content 
-  BaseObject.field.string :name
-  Link.field.string :name
-  BaseObject.field.string :duration # TODO: more precise definition
-  Link.field.int :height
-  Link.field.uri :href
-  Link.field.string :hreflang # TODO: more precise definition
-  CollectionPage.field.has :part_of, [Model[Collection], Model[Link]]
-  Place.field.float :latitude
-  Place.field.float :longitude
-  BaseObject.field.string :media_type
-  Link.field.string :media_type
-  BaseObject.field.time :end_time
-  BaseObject.field.time :published
-  BaseObject.field.time :start_time
-  Place.field.float :radius
-  Link.field.string :rel
-  OrderedCollectionPage.field.int :start_index
-  BaseObject.field.string :summary
-  Collection.field.int :total_items
-  Place.field.has :units, [:string, :uri]
-  BaseObject.field.time :updated
-  Link.field.int :width
-  Relationship.field.has :subject, [Model[BaseObject], Model[Link]]
-  Relationship.field.has :relationship, [Model[BaseObject], :uri, :string]
-  Profile.field.has :describes, Model[BaseObject]
-  Tombstone.field.has :former_type, Model[BaseObject]
-  Tombstone.field.time :deleted
+  Activity.define_field :actor, [BaseObject, Link]
+  BaseObject.define_field :attachment, [BaseObject, Link]
+  BaseObject.define_field :attributed_to, [BaseObject, Link]
+  Link.define_field :attributed_to, [BaseObject, Link]
+  BaseObject.define_field :audience, [BaseObject, Link]
+  BaseObject.define_field :bcc, [BaseObject, Link]
+  BaseObject.define_field :bto, [BaseObject, Link]
+  BaseObject.define_field :cc, [BaseObject, Link]
+  BaseObject.define_field :context, [BaseObject, Link]
+  Collection.define_field :current, [CollectionPage, Link]
+  Collection.define_field :first, [CollectionPage, Link]
+  BaseObject.define_field :generator, [BaseObject, Link]
+  BaseObject.define_field :icon, [Image, Link]
+  BaseObject.define_field :image, [Image, Link]
+  BaseObject.define_field :in_reply_to, [BaseObject, Link]
+  Activity.define_field :instrument, [BaseObject, Link]
+  Collection.define_field :last, [CollectionPage, Link]
+  BaseObject.define_field :location, [BaseObject, Link]
+  Collection.define_field :items, [[BaseObject, Link]]
+  Question.define_field :one_of, [BaseObject, Link]
+  Question.define_field :any_of, [BaseObject, Link]
+  Question.define_field :closed, [BaseObject, Link, :time, :bool]
+  Activity.define_field :origin, [BaseObject, Link]
+  CollectionPage.define_field :next, [CollectionPage, Link]
+  Activity.define_field :object, [BaseObject, Link]
+  IntransitiveActivity.define_field :object, :null
+  Relationship.define_field :object, [BaseObject, Link]
+  CollectionPage.define_field :prev, [CollectionPage, Link]
+  BaseObject.define_field :preview, [BaseObject, Link]
+  Link.define_field :preview, [BaseObject, Link]
+  Activity.define_field :result, [BaseObject, Link]
+  BaseObject.define_field :replies, [BaseObject, Link]
+  BaseObject.define_field :tag, [BaseObject, Link]
+  Activity.define_field :target, [BaseObject, Link]
+  BaseObject.define_field :to, [BaseObject, Link]
+  BaseObject.define_field :url, [:uri, Model[Link]]
+  Place.define_field :accuracy, :float
+  Place.define_field :altitude, :float
+  BaseObject.define_field :content, :string
+  BaseObject.define_field :name, :string
+  Link.define_field :name, :string
+  BaseObject.define_field :duration, :string # TODO: more precise definition
+  Link.define_field :height, :int
+  Link.define_field :href, :uri
+  Link.define_field :hreflang, :string # TODO: more precise definition
+  CollectionPage.define_field :part_of, [Collection, Link]
+  Place.define_field :latitude, :float
+  Place.define_field :longitude, :float
+  BaseObject.define_field :media_type, :string
+  Link.define_field :media_type, :string
+  BaseObject.define_field :end_time, :time
+  BaseObject.define_field :published, :time
+  BaseObject.define_field :start_time, :time
+  Place.define_field :radius, :float
+  Link.define_field :rel, :string
+  OrderedCollectionPage.define_field :start_index, :int
+  BaseObject.define_field :summary, :string
+  Collection.define_field :total_items, :int
+  Place.define_field :units, [:string, :uri]
+  BaseObject.define_field :updated, :time
+  Link.define_field :width, :int
+  Relationship.define_field :subject, [BaseObject, Link]
+  Relationship.define_field :relationship, [BaseObject, :uri, :string]
+  Profile.define_field :describes, Model[BaseObject]
+  Tombstone.define_field :former_type, Model[BaseObject]
+  Tombstone.define_field :deleted, :time
 
 end; end
