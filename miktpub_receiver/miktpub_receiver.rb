@@ -1,16 +1,8 @@
 # frozen_string_literal: true
 
-require 'rackup'
-
-module Plugin::MiktpubReceiver
-
-  class Application
-
-    def call(env)
-      [200, {}, ['Hello World!']]
-    end
-  end
-end
+require 'rack'
+require 'hanami/router'
+require_relative 'endpoint/webfinger'
 
 Plugin.create(:miktpub_receiver) do
 
@@ -25,11 +17,15 @@ Plugin.create(:miktpub_receiver) do
     end
   end
 
+  rack_app = Hanami::Router.new do
+    get '/.well-known/webfinger', to: Plugin::MiktpubReceiver::Endpoint::Webfinger.new
+  end
+
   Delayer.new do
     Thread.new do
-      s = Rackup::Server.new({
+      s = Rack::Server.new({
         Port: 3939,
-        app: Plugin::MiktpubReceiver::Application.new
+        app: rack_app
       })
       sigint_default
       block_value = nil

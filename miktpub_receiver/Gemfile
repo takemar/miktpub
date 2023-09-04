@@ -2,6 +2,6 @@
 
 source 'https://rubygems.org'
 
-gem 'rack'
-gem 'rackup'
+gem 'rack', '~> 2'
 gem 'puma'
+gem 'hanami-router', '>= 2'
