@@ -2,7 +2,8 @@
 slug: :miktpub_model
 depends:
   mikutter: 5.0.5
-  plugin: []
+  plugin:
+    - uitranslator
 version: '0.1.0'
 author: takemaro
 name: miktpub_model

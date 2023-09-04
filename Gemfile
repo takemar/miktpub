@@ -6,6 +6,8 @@ end
 
 source 'https://rubygems.org'
 
+gem 'diva'
+
 group :test do
   gem 'rspec'
 end
