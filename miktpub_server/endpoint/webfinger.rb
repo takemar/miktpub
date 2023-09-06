@@ -1,9 +1,35 @@
+require 'json'
+
 module Plugin::MiktpubServer; module Endpoint
 
   class Webfinger
 
-    def call(env)
-      [200, {}, ['Hello World!']]
+    def initialize(env)
+      @request = Rack::Request.new(env)
+    end
+
+    def self.call(env)
+      self.new(env).call
+    end
+
+    def call
+      resource = @request.params['resource']
+      return error(400) unless resource
+      match_data = resource.match(/\Aacct:@?([^@])@\z/)
+      return error(404) unless match_data # TODO: resource=https://...
+      preferred_username, domain = match_data.captures
+      rel = @request.params['rel']
+    end
+
+    def response(body, status = 200, headers = {}, content_type: 'application/jrd+json')
+      default_headers = {
+        'Content-Type': content_type
+      }
+      [status, default_headers.merge(headers), [body.to_json]]
+    end
+
+    def error(status)
+      [status, {'Content-Type': 'text/plain'}, [Rack::Utils::HTTP_STATUS_CODES[status]]]
     end
   end
 

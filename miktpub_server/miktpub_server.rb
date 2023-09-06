@@ -18,7 +18,7 @@ Plugin.create(:miktpub_server) do
   end
 
   rack_app = Hanami::Router.new do
-    get '/.well-known/webfinger', to: Plugin::MiktpubServer::Endpoint::Webfinger.new
+    get '/.well-known/webfinger', to: Plugin::MiktpubServer::Endpoint::Webfinger
   end
 
   Delayer.new do
