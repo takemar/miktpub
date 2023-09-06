@@ -1,0 +1,88 @@
+{
+    "https://www.w3.org/ns/activitystreams#actor": [
+        {
+            "https://www.w3.org/ns/activitystreams#icon": [
+                {
+                    "https://www.w3.org/ns/activitystreams#href": [
+                        {
+                            "@id": "https://social.hachune.example.net/users/mikutter-chan/icon.png"
+                        }
+                    ],
+                    "@id": "https://social.hachune.example.net/users/mikutter-chan/icon",
+                    "@type": [
+                        "https://www.w3.org/ns/activitystreams#Link"
+                    ]
+                }
+            ],
+            "@id": "https://social.hachune.example.net/users/mikutter-chan",
+            "https://www.w3.org/ns/activitystreams#name": [
+                {
+                    "@value": "みくったーちゃん"
+                }
+            ],
+            "@type": [
+                "https://www.w3.org/ns/activitystreams#Person"
+            ]
+        }
+    ],
+    "@id": "https://social.hachune.example.net/notes/156#create",
+    "https://www.w3.org/ns/activitystreams#object": [
+        {
+            "https://www.w3.org/ns/activitystreams#attributedTo": [
+                {
+                    "https://www.w3.org/ns/activitystreams#icon": [
+                        {
+                            "https://www.w3.org/ns/activitystreams#href": [
+                                {
+                                    "@id": "https://social.hachune.example.net/users/mikutter-chan/icon.png"
+                                }
+                            ],
+                            "@id": "https://social.hachune.example.net/users/mikutter-chan/icon",
+                            "@type": [
+                                "https://www.w3.org/ns/activitystreams#Link"
+                            ]
+                        }
+                    ],
+                    "@id": "https://social.hachune.example.net/users/mikutter-chan",
+                    "https://www.w3.org/ns/activitystreams#name": [
+                        {
+                            "@value": "みくったーちゃん"
+                        }
+                    ],
+                    "@type": [
+                        "https://www.w3.org/ns/activitystreams#Person"
+                    ]
+                }
+            ],
+            "https://www.w3.org/ns/activitystreams#content": [
+                {
+                    "@value": "Hello World!"
+                }
+            ],
+            "@id": "https://social.hachune.example.net/notes/156",
+            "https://www.w3.org/ns/activitystreams#published": [
+                {
+                    "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+                    "@value": "2007-08-31T09:00:00Z"
+                }
+            ],
+            "https://www.w3.org/ns/activitystreams#to": [
+                {
+                    "@id": "https://www.w3.org/ns/activitystreams#Public"
+                }
+            ],
+            "@type": [
+                "https://www.w3.org/ns/activitystreams#Note"
+            ]
+        }
+    ],
+    "https://www.w3.org/ns/activitystreams#published": [
+        {
+            "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+            "@value": "2007-08-31T09:00:00Z"
+        }
+    ],
+    "@type": [
+        "https://www.w3.org/ns/activitystreams#Create"
+    ]
+}
