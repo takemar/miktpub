@@ -4,7 +4,7 @@ require 'rack'
 require 'hanami/router'
 require_relative 'endpoint/webfinger'
 
-Plugin.create(:miktpub_receiver) do
+Plugin.create(:miktpub_server) do
 
   def sigint_default
     Reserver.new(1) do
@@ -18,7 +18,7 @@ Plugin.create(:miktpub_receiver) do
   end
 
   rack_app = Hanami::Router.new do
-    get '/.well-known/webfinger', to: Plugin::MiktpubReceiver::Endpoint::Webfinger.new
+    get '/.well-known/webfinger', to: Plugin::MiktpubServer::Endpoint::Webfinger.new
   end
 
   Delayer.new do

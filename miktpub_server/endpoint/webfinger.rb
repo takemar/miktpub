@@ -1,4 +1,4 @@
-module Plugin::MiktpubReceiver; module Endpoint
+module Plugin::MiktpubServer; module Endpoint
 
   class Webfinger
 
