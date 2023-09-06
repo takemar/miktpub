@@ -66,11 +66,6 @@
                     "@value": "2007-08-31T09:00:00Z"
                 }
             ],
-            "https://www.w3.org/ns/activitystreams#to": [
-                {
-                    "@id": "https://www.w3.org/ns/activitystreams#Public"
-                }
-            ],
             "@type": [
                 "https://www.w3.org/ns/activitystreams#Note"
             ]

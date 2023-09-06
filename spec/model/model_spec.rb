@@ -9,7 +9,16 @@ RSpec.describe Plugin::MiktpubModel::Model do
   let(:example_hash) { JSON.parse(example_json, symbolize_names: true) }
 
   it 'JSON-LD expanded形式のハッシュでnewできる' do
+
+    ns = 'https://www.w3.org/ns/activitystreams#'
+
+    allow(Plugin).to receive(:filtering) do |event_name, type_uri, types|
+      expect(type_uri.to_s).to be_start_with(ns)
+      [type_uri, [Plugin::MiktpubModel::AS.const_get(type_uri.to_s.delete_prefix(ns), false)]]
+    end
+
     model = Plugin::MiktpubModel::Model.new(example_hash)
+
     expect(model).to be_kind_of(Plugin::MiktpubModel::Model)
     expect(model).to be_kind_of(Plugin::MiktpubModel::AS::Create)
     expect(model).to be_kind_of(Plugin::MiktpubModel::AS::Activity)
