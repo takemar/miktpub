@@ -1,16 +1,11 @@
 require 'json'
+require_relative '../endpoint.rb'
 
 module Plugin::MiktpubServer; module Endpoint
 
-  class Webfinger
+  class Webfinger < Base
 
-    def initialize(env)
-      @request = Rack::Request.new(env)
-    end
-
-    def self.call(env)
-      self.new(env).call
-    end
+    def default_content_type = 'application/jrd+json'
 
     def call
       resource = @request.params['resource']
@@ -31,17 +26,6 @@ module Plugin::MiktpubServer; module Endpoint
           },
         ],
       })
-    end
-
-    def response(body, status = 200, headers = {}, content_type: 'application/jrd+json')
-      default_headers = {
-        'Content-Type' => content_type
-      }
-      [status, default_headers.merge(headers), [body.to_json]]
-    end
-
-    def error(status)
-      [status, {'Content-Type': 'text/plain'}, [Rack::Utils::HTTP_STATUS_CODES[status]]]
     end
   end
 
