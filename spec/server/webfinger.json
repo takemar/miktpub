@@ -1,0 +1,10 @@
+{
+    "subject": "acct:mikutterchan@social.hachune.example.net",
+    "links": [
+        {
+            "rel": "self",
+            "type": "application/activity+json",
+            "href": "https://social.hachune.example.net/users/mikutterchan"
+        }
+    ]
+}

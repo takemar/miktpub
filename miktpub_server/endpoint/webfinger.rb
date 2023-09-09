@@ -35,7 +35,7 @@ module Plugin::MiktpubServer; module Endpoint
 
     def response(body, status = 200, headers = {}, content_type: 'application/jrd+json')
       default_headers = {
-        'Content-Type': content_type
+        'Content-Type' => content_type
       }
       [status, default_headers.merge(headers), [body.to_json]]
     end

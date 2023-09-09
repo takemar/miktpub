@@ -3,9 +3,10 @@ class Plugin
   def _(x); x; end
 
   class << self
-    def [](...); new; end
+    def [](...) = new
     def call(...); end
-    def filtering(event_names, *args); args end
+    def filtering(event_names, *args) = args
+    def collect(...) = []
   end
 end
 
