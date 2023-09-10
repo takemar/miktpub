@@ -1,10 +1,9 @@
 ---
-slug: :miktpub_server
+slug: :miktpub
 depends:
   mikutter: 5.0.5
-  plugin:
-    - miktpub_model
+  plugin: []
 version: '0.1.0'
 author: takemaro
-name: miktpub_server
+name: miktpub
 description: part of miktpub -- an ActivityPub federation server plugin for mikutter
