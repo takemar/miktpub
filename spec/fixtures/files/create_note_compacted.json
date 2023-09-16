@@ -1,0 +1,32 @@
+{
+    "@context": "https://www.w3.org/ns/activitystreams",
+    "id": "https://social.hachune.example.net/notes/156#create",
+    "type": "Create",
+    "actor": {
+        "id": "https://social.hachune.example.net/users/mikutter-chan",
+        "type": "Person",
+        "icon": {
+            "id": "https://social.hachune.example.net/users/mikutter-chan/icon",
+            "type": "Link",
+            "href": "https://social.hachune.example.net/users/mikutter-chan/icon.png"
+        },
+        "name": "みくったーちゃん"
+    },
+    "object": {
+        "id": "https://social.hachune.example.net/notes/156",
+        "type": "Note",
+        "attributedTo": {
+            "id": "https://social.hachune.example.net/users/mikutter-chan",
+            "type": "Person",
+            "icon": {
+                "id": "https://social.hachune.example.net/users/mikutter-chan/icon",
+                "type": "Link",
+                "href": "https://social.hachune.example.net/users/mikutter-chan/icon.png"
+            },
+            "name": "みくったーちゃん"
+        },
+        "content": "Hello World!",
+        "published": "2007-08-31T09:00:00Z"
+    },
+    "published": "2007-08-31T09:00:00Z"
+}

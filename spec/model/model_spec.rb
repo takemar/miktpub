@@ -5,31 +5,63 @@ require './miktpub_model/as'
 
 RSpec.describe Plugin::MiktpubModel::Model do
 
-  let(:example_json) { File.read('./spec/fixtures/files/create_note.json') }
-  let(:example_hash) { JSON.parse(example_json, symbolize_names: true) }
+  shared_examples 'create_note' do
+    example 'モデルが正しく構築されている' do
+      is_expected.to be_kind_of(Plugin::MiktpubModel::Model)
+      is_expected.to be_kind_of(Plugin::MiktpubModel::AS::Create)
+      is_expected.to be_kind_of(Plugin::MiktpubModel::AS::Activity)
+      is_expected.to be_kind_of(Plugin::MiktpubModel::AS::BaseObject)
+      expect(subject.class).to eq(Plugin::MiktpubModel::Model[Plugin::MiktpubModel::AS::Create])
+      expect(subject.published!).to eq(Time.new('2007-08-31T09:00:00Z'))
+      expect(subject.object!).to be_kind_of(Plugin::MiktpubModel::Model)
+      expect(subject.object!).to be_kind_of(Plugin::MiktpubModel::AS::Note)
+      expect(subject.object!).to be_kind_of(Plugin::MiktpubModel::AS::BaseObject)
+      expect(subject.object!.class).to eq(Plugin::MiktpubModel::Model[Plugin::MiktpubModel::AS::Note])
+      expect(subject.object!.content!).to eq('Hello World!')
+      expect(subject.object!.attributed_to!.name!).to eq('みくったーちゃん')
+    end
+  end
 
-  it 'JSON-LD expanded形式のハッシュでnewできる' do
-
+  before do
     ns = 'https://www.w3.org/ns/activitystreams#'
-
     allow(Plugin).to receive(:filtering) do |event_name, type_uri, types|
       expect(type_uri.to_s).to be_start_with(ns)
       [type_uri, [Plugin::MiktpubModel::AS.const_get(type_uri.to_s.delete_prefix(ns), false)]]
     end
+  end
 
-    model = Plugin::MiktpubModel::Model.new(example_hash)
+  context 'JSON-LD expanded形式のハッシュでnew' do
 
-    expect(model).to be_kind_of(Plugin::MiktpubModel::Model)
-    expect(model).to be_kind_of(Plugin::MiktpubModel::AS::Create)
-    expect(model).to be_kind_of(Plugin::MiktpubModel::AS::Activity)
-    expect(model).to be_kind_of(Plugin::MiktpubModel::AS::BaseObject)
-    expect(model.class).to eq(Plugin::MiktpubModel::Model[Plugin::MiktpubModel::AS::Create])
-    expect(model.published!).to eq(Time.new('2007-08-31T09:00:00Z'))
-    expect(model.object!).to be_kind_of(Plugin::MiktpubModel::Model)
-    expect(model.object!).to be_kind_of(Plugin::MiktpubModel::AS::Note)
-    expect(model.object!).to be_kind_of(Plugin::MiktpubModel::AS::BaseObject)
-    expect(model.object!.class).to eq(Plugin::MiktpubModel::Model[Plugin::MiktpubModel::AS::Note])
-    expect(model.object!.content!).to eq('Hello World!')
-    expect(model.object!.attributed_to!.name!).to eq('みくったーちゃん')
+    subject do
+      json = File.read('./spec/fixtures/files/create_note_expanded.json')
+      hash = JSON.parse(json, symbolize_names: true)
+      Plugin::MiktpubModel::Model.new(hash)
+    end
+
+    include_examples 'create_note'
+
+  end
+
+  context 'JSON-LD compacted形式のハッシュでparse' do
+
+    subject do
+      json = File.read('./spec/fixtures/files/create_note_compacted.json')
+      hash = JSON.parse(json)
+      Plugin::MiktpubModel::Model.parse(hash)
+    end
+
+    include_examples 'create_note'
+
+  end
+
+  context 'JSON-LD compacted形式の文字列でparse' do
+
+    subject do
+      json = File.read('./spec/fixtures/files/create_note_compacted.json')
+      Plugin::MiktpubModel::Model.parse(json)
+    end
+
+    include_examples 'create_note'
+
   end
 end
