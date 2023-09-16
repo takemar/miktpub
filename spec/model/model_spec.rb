@@ -33,9 +33,32 @@ RSpec.describe Plugin::MiktpubModel::Model do
   context 'JSON-LD expanded形式のハッシュでnew' do
 
     subject do
-      json = File.read('./spec/fixtures/files/create_note.json')
+      json = File.read('./spec/fixtures/files/create_note_expanded.json')
       hash = JSON.parse(json, symbolize_names: true)
       Plugin::MiktpubModel::Model.new(hash)
+    end
+
+    include_examples 'create_note'
+
+  end
+
+  context 'JSON-LD compacted形式のハッシュでparse' do
+
+    subject do
+      json = File.read('./spec/fixtures/files/create_note_compacted.json')
+      hash = JSON.parse(json)
+      Plugin::MiktpubModel::Model.parse(hash)
+    end
+
+    include_examples 'create_note'
+
+  end
+
+  context 'JSON-LD compacted形式の文字列でparse' do
+
+    subject do
+      json = File.read('./spec/fixtures/files/create_note_compacted.json')
+      Plugin::MiktpubModel::Model.parse(json)
     end
 
     include_examples 'create_note'

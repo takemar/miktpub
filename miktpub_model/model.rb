@@ -1,3 +1,7 @@
+require 'json'
+require 'json/ld'
+require 'json/ld/preloaded/activitystreams'
+
 module Plugin::MiktpubModel
 
   class Model < Diva::Model
@@ -30,18 +34,31 @@ module Plugin::MiktpubModel
 
       alias _new new
 
-      def new(args)
-        t = Array(args[:@type]).map do |type|
+      def new(value)
+        if value.kind_of?(Array) && value.size == 1
+          value = value.first
+        end
+        value = value.transform_keys(&:to_sym)
+
+        t = Array(value[:@type]).map do |type|
           _, x = Plugin.filtering(:miktpub_model_type, Diva::URI(type), [])
           x
         end.flatten
         unless (self.types - [t, t.map(&:ancestor_types)].flatten).empty?
           raise(
             Diva::InvalidTypeError,
-            "Type for #{ args.inspect } is #{ t.inspect }, not superset of #{ self.types.inspect }"
+            "Type for #{ value.inspect } is #{ t.inspect }, not superset of #{ self.types.inspect }"
           )
         end
-        Model[*t.uniq.sort(&:hash)]._new(args)
+
+        Model[*t.uniq.sort(&:hash)]._new(value)
+      end
+
+      def parse(value)
+        if value.kind_of?(String)
+          value = JSON.parse(value)
+        end
+        self.new(JSON::LD::API.expand(value))
       end
 
       def [](*types)
