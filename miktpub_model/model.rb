@@ -15,10 +15,15 @@ module Plugin::MiktpubModel
         ).transform_values do |value|
           if value.kind_of?(Array)
             value.map do |v|
-              if v.kind_of?(Hash) && v.key?(:@value)
-                v[:@value]
-              elsif v.kind_of?(Hash) && v.size == 1 && v.key?(:@id)
-                v[:@id]
+              if v.kind_of?(Hash)
+                hash = v.transform_keys(&:to_sym)
+                if hash.key?(:@value)
+                  hash[:@value]
+                elsif hash.size == 1 && hash.key?(:@id)
+                  hash[:@id]
+                else
+                  hash
+                end
               else
                 v
               end
