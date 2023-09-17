@@ -7,6 +7,8 @@ end
 source 'https://rubygems.org'
 
 gem 'diva'
+gem 'delayer'
+gem 'pluggaloid'
 
 group :test do
   gem 'rspec'

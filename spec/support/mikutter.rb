@@ -1,14 +1,6 @@
-class Plugin
-
-  def _(x); x; end
-
-  class << self
-    def [](...) = new
-    def call(...); end
-    def filtering(event_names, *args) = args
-    def collect(...) = []
-  end
-end
+require 'diva'
+require 'delayer'
+require 'pluggaloid'
 
 module Diva; class Model
 
@@ -20,3 +12,26 @@ module Diva; class Model
   end
 
 end; end
+
+Delayer.default = Delayer.generate_class(
+  priority: %i[
+    ui_response
+    routine_active
+    ui_passive
+    routine_passive
+    ui_favorited
+    destroy_cache
+  ],
+  default: :routine_passive,
+  expire: 0.02
+)
+
+class Plugin < Pluggaloid::Plugin
+  def _(x) = x
+end
+
+RSpec.configure do |config|
+  config.before do
+    Plugin.vm = Pluggaloid.new(Delayer.default)
+  end
+end

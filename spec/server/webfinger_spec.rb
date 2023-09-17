@@ -1,5 +1,6 @@
 require 'json'
 require 'rack/test'
+require './miktpub/user'
 require './miktpub_server/endpoint/webfinger'
 
 RSpec.describe Plugin::MiktpubServer::Endpoint::Webfinger do
@@ -9,16 +10,15 @@ RSpec.describe Plugin::MiktpubServer::Endpoint::Webfinger do
   def app = Plugin::MiktpubServer::Endpoint::Webfinger
 
   before do
-    allow(Plugin).to receive(:collect) do |event_name, preferred_username, domain|
-      expect(event_name).to eq(:miktpub_acct)
-      if preferred_username == 'mikutterchan' && domain == 'social.hachune.example.net'
-        acct = Object.new
-        def acct.id = 'https://social.hachune.example.net/users/mikutterchan'
-        def acct.preferred_username = 'mikutterchan'
-        def acct.domain = 'social.hachune.example.net'
-        [acct]
-      else
-        []
+    Plugin.create(:miktpub_server_webfinger_spec) do
+      load './miktpub/miktpub.rb'
+      query = { username: 'mikutterchan', host: 'social.hachune.example.net' }
+      collection(:miktpub_query_local_users, query) do |collector|
+        collector.add(Plugin::Miktpub::User.new(
+          id: 'https://social.hachune.example.net/users/mikutterchan',
+          username: 'mikutterchan',
+          host: 'social.hachune.example.net',
+        ))
       end
     end
   end

@@ -1,8 +1,5 @@
-module Plugin; module Miktpub;
+module Plugin::Miktpub
 
-  class User
+  User = Struct.new(:id, :user_id, :username, :host, :data)
 
-    attr_accessor :data
-
-  end
 end

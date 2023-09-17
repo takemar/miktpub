@@ -1,4 +1,3 @@
-require 'json'
 require_relative '../endpoint.rb'
 
 module Plugin::MiktpubServer; module Endpoint
@@ -14,15 +13,18 @@ module Plugin::MiktpubServer; module Endpoint
       return error(404) unless match_data # TODO: resource=https://...
       preferred_username, domain = match_data.captures
       rel = @request.params['rel']
-      acct = Plugin.collect(:miktpub_acct, preferred_username.downcase, domain.downcase).first
-      return error(404) unless acct
+      user = Plugin.collect(
+        :miktpub_query_local_users,
+        { username: preferred_username.downcase, host: domain.downcase },
+      ).first
+      return error(404) unless user
       response({
-        subject: "acct:#{ acct.preferred_username }@#{ acct.domain }",
+        subject: "acct:#{ user.username }@#{ user.host }",
         links: [
           {
             rel: 'self',
             type: 'application/activity+json',
-            href: acct.id,
+            href: user.id,
           },
         ],
       })
