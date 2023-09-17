@@ -3,6 +3,7 @@
 require 'rack'
 require 'hanami/router'
 require_relative 'endpoint/webfinger'
+require_relative 'endpoint/user'
 
 Plugin.create(:miktpub_server) do
 
@@ -19,6 +20,7 @@ Plugin.create(:miktpub_server) do
 
   rack_app = Hanami::Router.new do
     get '/.well-known/webfinger', to: Plugin::MiktpubServer::Endpoint::Webfinger
+    get '/users/:user_id', to Plugin::MiktpubServer::Endpoint::User
   end
 
   Delayer.new do
