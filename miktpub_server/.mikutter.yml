@@ -3,7 +3,7 @@ slug: :miktpub_server
 depends:
   mikutter: 5.0.5
   plugin:
-    - miktpub_model
+    - miktpub
 version: '0.1.0'
 author: takemaro
 name: miktpub_server
